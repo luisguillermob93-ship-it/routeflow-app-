@@ -522,7 +522,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Restore sidebar state
     const savedSidebarState = localStorage.getItem('routeflow_sidebar_collapsed') === 'true';
-    if (savedSidebarState) toggleSidebar(true);
+    if (savedSidebarState && window.innerWidth > 768) toggleSidebar(true);
+
+    // --- MOBILE NAVIGATION LOGIC ---
+    const btnOpenMenu = document.getElementById('btn-open-menu');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    const toggleMobileMenu = (open) => {
+        if (open) {
+            sidebar.classList.add('mobile-active');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        } else {
+            sidebar.classList.remove('mobile-active');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Fix map size after drawer transition
+        if (typeof map !== 'undefined') {
+            setTimeout(() => map.invalidateSize(), 400);
+        }
+    };
+
+    btnOpenMenu.addEventListener('click', () => toggleMobileMenu(true));
+    sidebarOverlay.addEventListener('click', () => toggleMobileMenu(false));
+
+    // Close mobile menu when a nav item is clicked
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                toggleMobileMenu(false);
+            }
+        });
+    });
 
     // --- INITIALIZE UI ---
     console.log("Sistema RouteFlow Pro Inicializado");

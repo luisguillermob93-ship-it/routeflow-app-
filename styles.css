@@ -1790,4 +1790,228 @@ input:checked+.slider:before {
 
 .dark-mode .btn-text-action.return:hover {
     background: rgba(96, 165, 250, 0.1);
+}
+
+/* =========================================
+   RESPONSIVE & MOBILE STYLES
+   ========================================= */
+
+/* Mobile Elements Hidden by default */
+.mobile-header {
+    display: none;
+    height: 60px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo-mini span {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.logo-icon-mini {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.btn-icon-mobile {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Wide tablets / Small Laptops */
+@media (max-width: 1200px) {
+    .sidebar { width: 260px; }
+}
+
+@media (max-width: 991px) {
+    .main-dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tablets and Phones */
+@media (max-width: 768px) {
+    .app-wrapper {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+    }
+
+    .mobile-header { display: flex; }
+
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        bottom: 0;
+        width: 300px;
+        height: 100vh;
+        z-index: 2000;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        background: white;
+        border-right: 1px solid var(--border-color);
+        box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    }
+
+    .sidebar.mobile-active {
+        transform: translateX(300px);
+    }
+
+    .sidebar-toggle { display: none; }
+
+    .main-content {
+        padding-top: 0;
+        overflow: visible;
+    }
+
+    .page-header {
+        padding: 1.5rem;
+    }
+
+    .page-header h2 { font-size: 1.6rem; }
+
+    .tab-content-area {
+        padding: 1rem;
+    }
+
+    /* Map Responsive adjustments */
+    .hero-map-section {
+        padding: 0;
+    }
+
+    .map-container {
+        height: 60vh;
+        border-radius: 0;
+    }
+
+    .floating-search-card {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: none;
+        margin-bottom: 0;
+        box-shadow: none;
+    }
+
+    .search-inputs {
+        max-height: 250px;
+    }
+
+    /* Form adjustments */
+    .triplet-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .config-section {
+        margin-bottom: 2rem;
+    }
+
+    .summary-section {
+        position: relative;
+        top: 0;
+    }
+
+    .results-card {
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+    }
+
+    .cost-final .super-highlight {
+        font-size: 2rem;
+    }
+
+    .settings-vehicle-grid, .settings-inputs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .history-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* PDF Modal adjustments for mobile */
+    .modal-container {
+        width: 95%;
+        margin: 1rem auto;
+        max-height: 90vh;
+    }
+
+    .pdf-invoice-wrapper {
+        padding: 15px;
+    }
+
+    .pdf-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .pdf-invoice-details {
+        text-align: center;
+    }
+}
+
+.dark-mode .sidebar {
+    background: #0f172a;
+}
+
+.dark-mode .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode .mobile-header {
+    background: #1e293b;
+    border-bottom-color: rgba(51, 65, 85, 0.6);
 }
