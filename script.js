@@ -590,19 +590,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- MOBILE ADVANCED UI LOGIC ---
 
-    // 1. Accordions for Form Groups
-    const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+    // 1. Accordions for Form Groups (ONLY inside Calculadora tab)
+    // Select only groups that actually have an accordion-trigger header
+    const accordionGroups = document.querySelectorAll('#tab-calculadora .form-card-group');
+    const accordionTriggers = document.querySelectorAll('#tab-calculadora .accordion-trigger');
+
     accordionTriggers.forEach(trigger => {
         trigger.addEventListener('click', () => {
             if (window.innerWidth <= 768) {
                 const parent = trigger.closest('.form-card-group');
                 const isCollapsed = parent.classList.contains('collapsed');
-                
-                // Optional: Close other accordions
-                document.querySelectorAll('.form-card-group').forEach(group => {
-                    group.classList.add('collapsed');
-                });
 
+                // Close all accordion groups in calculadora only
+                accordionGroups.forEach(group => group.classList.add('collapsed'));
+
+                // If clicking an already-collapsed group, open it
                 if (isCollapsed) {
                     parent.classList.remove('collapsed');
                 }
@@ -610,14 +612,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Initialize accordions as collapsed on mobile
+    // On mobile: collapse calculadora groups only; leave Settings untouched
     if (window.innerWidth <= 768) {
-        document.querySelectorAll('.form-card-group').forEach(group => {
-            group.classList.add('collapsed');
-        });
-        // Keep first one open?
-        const firstGroup = document.querySelector('.form-card-group');
-        if (firstGroup) firstGroup.classList.remove('collapsed');
+        accordionGroups.forEach(group => group.classList.add('collapsed'));
+        // Open the first one (Vehicle Selector) by default
+        if (accordionGroups.length > 0) accordionGroups[0].classList.remove('collapsed');
     }
 
     // 2. Map Card Collapse
