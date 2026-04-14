@@ -1317,6 +1317,116 @@ input:checked+.slider:before {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* ===================================
+   PDF MOBILE RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+    /* Full-screen modal on mobile */
+    .modal-overlay {
+        padding: 0;
+        align-items: flex-start;
+    }
+
+    .modal-container {
+        width: 100%;
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        margin: 0;
+    }
+
+    .modal-header {
+        padding: 1rem 1.25rem;
+        border-radius: 0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.25rem;
+        border-radius: 0;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        flex-direction: column-reverse;
+        gap: 0.5rem;
+    }
+
+    .modal-footer button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-body {
+        padding: 0.75rem;
+        overflow-x: hidden;
+    }
+
+    /* PDF paper scales to viewport width */
+    .pdf-invoice-wrapper {
+        width: 100% !important;
+        min-width: unset !important;
+        padding: 20px 15px;
+        font-size: 12px;
+        box-shadow: none;
+    }
+
+    .pdf-title { font-size: 18px !important; }
+    .pdf-subtitle, .pdf-meta { font-size: 11px !important; }
+    .pdf-invoice-title { font-size: 15px !important; }
+    .pdf-invoice-details p { font-size: 11px !important; }
+
+    .pdf-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pdf-invoice-details {
+        text-align: left;
+    }
+
+    .pdf-route-grid {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pdf-route-grid .val { font-size: 14px !important; }
+
+    .pdf-route-stats {
+        flex-direction: column;
+        gap: 6px;
+        font-size: 12px;
+    }
+
+    /* Make tables scroll horizontally as last resort */
+    .pdf-table {
+        font-size: 11px;
+    }
+
+    .pdf-table th, .pdf-table td {
+        padding: 7px 8px;
+        font-size: 11px;
+    }
+
+    .pdf-totals-section {
+        justify-content: stretch;
+    }
+
+    .pdf-totals-box {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .pdf-row {
+        font-size: 12px;
+    }
+
+    .pdf-row.grand-total {
+        font-size: 16px;
+    }
+}
+
 /* Rest of the Invoice Styling */
 .pdf-header {
     display: flex;
