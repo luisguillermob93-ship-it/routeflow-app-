@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteFlow Pro | Logística Inteligente</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;700;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- HTML2PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-wrapper">
+        <!-- SIDEBAR NAVIGATION -->
+        <nav class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="ph-fill ph-truck"></i></div>
+                <h1>ROUTEFLOW <span class="pro-badge">PRO</span></h1>
+            </div>
+            
+            <ul class="nav-links">
+                <li class="nav-item active" data-tab="tab-mapa">
+                    <i class="ph ph-map-trifold"></i>
+                    <span>Trazado Integral de Rutas</span>
+                </li>
+                <li class="nav-item" data-tab="tab-calculadora">
+                    <i class="ph ph-calculator"></i>
+                    <span>Panel de Costos y Facturación</span>
+                </li>
+                <li class="nav-item" data-tab="tab-historial">
+                    <i class="ph ph-clock-counter-clockwise"></i>
+                    <span>Historial de Cotizaciones</span>
+                </li>
+                <li class="nav-item" data-tab="tab-ajustes">
+                    <i class="ph ph-sliders"></i>
+                    <span>Panel de Ajustes</span>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button type="button" id="btn-dark-mode" class="btn-dark-toggle" title="Alternar Modo Oscuro">
+                    <i class="ph ph-moon" id="dark-icon"></i>
+                    <span id="dark-label">Modo Oscuro</span>
+                </button>
+                <div class="status-badge">
+                    <span class="dot"></span> <span>Sistema En Línea</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT AREA -->
+        <div class="main-content">
+
+            <!-- TAB 1: MAPA -->
+            <section id="tab-mapa" class="tab-pane active">
+                <header class="page-header">
+                    <h2>Trazado Integral de Rutas</h2>
+                    <p>Agrega múltiples puntos en el mapa para el cálculo espacial automático de distancia y tiempo.</p>
+                </header>
+
+                <div class="tab-content-area" style="padding-top: 1rem;">
+                    <!-- Top Full Width Map -->
+                    <section class="hero-map-section" style="max-width: 100%; margin: 0; padding: 0;">
+                        <div class="map-container" style="height: calc(100vh - 240px); min-height: 500px;">
+                <div id="map"></div>
+
+                <!-- Floating Route Search inside the map -->
+                <div class="floating-search-card">
+                    <div class="search-title">
+                        <i class="ph ph-map-pin-line"></i>
+                        <h3>Planificar Ruta</h3>
+                    </div>
+                    <div class="search-inputs" id="route-inputs-container">
+                        <div class="input-wrapper" id="origen-wrapper">
+                            <i class="ph ph-record"></i>
+                            <input type="text" id="origen" class="route-input" placeholder="Punto de Salida..."
+                                autocomplete="off">
+                        </div>
+                        <div class="route-line-connector"></div>
+
+                        <div id="waypoints-container">
+                            <!-- Dynamic waypoints will be injected here -->
+                        </div>
+
+                        <div class="input-wrapper" id="destino-wrapper">
+                            <i class="ph-fill ph-map-pin"></i>
+                            <input type="text" id="destino" class="route-input" placeholder="Punto de Llegada..."
+                                autocomplete="off">
+                        </div>
+
+                        <!-- RETURN STOPS SECTION -->
+                        <div class="return-stops-divider" id="return-stops-divider" style="display:none;">
+                            <span><i class="ph ph-arrows-counter-clockwise"></i> Recogidas de Retorno (Destino → Origen)</span>
+                        </div>
+
+                        <div id="waypoints-return-container">
+                            <!-- Dynamic return waypoints injected here -->
+                        </div>
+
+                        <div class="route-actions-row">
+                            <button type="button" id="btn-add-stop" class="btn-text-action">
+                                <i class="ph ph-plus-circle"></i> Agregar Parada
+                            </button>
+                            <button type="button" id="btn-add-return-stop" class="btn-text-action return">
+                                <i class="ph ph-plus-circle"></i> Recogida de Retorno
+                            </button>
+                        </div>
+                    </div>
+                    <div class="auto-calc-notice" id="calc-status">
+                        <i class="ph ph-info"></i> Ingrese ubicaciones para trazar y calcular.
+                    </div>
+                </div>
+            </div>
+                    </section>
+                </div>
+            </section> <!-- End Tab Mapa -->
+
+            <!-- TAB 2: CALCULADORA -->
+            <section id="tab-calculadora" class="tab-pane">
+                <header class="page-header">
+                    <h2>Panel de Costos y Facturación</h2>
+                    <p>Configura las tarifas, vehículos y viáticos operativos de la ruta estructurada previamente.</p>
+                </header>
+                
+                <div class="tab-content-area" style="padding-top: 1rem;">
+                    <!-- Main Dashboard Content -->
+                    <main class="main-dashboard" style="max-width: 100%; padding: 0;">
+                        <!-- Left Column: Settings Form -->
+                        <section class="config-section">
+                            <form id="logistics-form" class="dashboard-form">
+
+                    <!-- Vehicle Selector -->
+                    <div class="form-card-group">
+                        <div class="section-title">
+                            <h3><i class="ph ph-truck"></i> Tipo de Vehículo</h3>
+                        </div>
+                        <div class="vehicle-selector-grid" id="vehicle-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+                            <div class="vehicle-card" data-vehicle="camion25">
+                                <i class="ph ph-truck"></i>
+                                <span>Ligero Propio</span>
+                                <small>≤ 2.5 Ton</small>
+                            </div>
+                            <div class="vehicle-card" data-vehicle="camion52">
+                                <i class="ph-fill ph-truck"></i>
+                                <span>Mediano Propio</span>
+                                <small>≤ 5.2 Ton</small>
+                            </div>
+                            <div class="vehicle-card" data-vehicle="tercerizado" id="card-tercerizado" style="border-color:#f59e0b; background-color:#fffbeb; color:#b45309; opacity:0.6; pointer-events:none;">
+                                <i class="ph-fill ph-truck-trailer" style="color:#d97706;"></i>
+                                <span style="font-weight:800;">Tercerizado</span>
+                                <small>> 5.2 Ton</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cliente -->
+                    <div class="form-card-group">
+                        <div class="section-title">
+                            <h3><i class="ph ph-buildings"></i> Datos del Cliente</h3>
+                        </div>
+                        <div class="input-modern">
+                            <label for="cliente-nombre">Empresa / Cliente</label>
+                            <input type="text" id="cliente-nombre" placeholder="Nombre de la empresa o cliente...">
+                        </div>
+                    </div>
+
+                    <div class="form-row triplet-grid">
+                        <div class="form-card">
+                            <label><i class="ph ph-activity"></i> Distancia (km)</label>
+                            <input type="number" id="distancia" min="0" step="0.1" placeholder="Auto" readonly>
+                        </div>
+                        <div class="form-card">
+                            <label><i class="ph ph-clock"></i> Tiempo (hrs)</label>
+                            <input type="number" id="tiempo" min="0" step="0.1" placeholder="Auto" readonly>
+                        </div>
+                        <div class="form-card highlight-border">
+                            <label><i class="ph ph-package"></i> Peso (Ton)</label>
+                            <input type="number" id="peso" min="0" step="0.1" placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- Costos Variables / Operación Logística -->
+                    <div class="form-card-group">
+                        <div class="section-title">
+                            <h3><i class="ph ph-gas-pump"></i> Costos de Operación (Ruta)</h3>
+                        </div>
+                        <div class="grid-2">
+                            <div class="input-modern">
+                                <label for="costo-km">Distancia (Costo / km $)</label>
+                                <input type="number" id="costo-km" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern">
+                                <label for="costo-tonelada">Peso (Costo / Tonelada $)</label>
+                                <input type="number" id="costo-tonelada" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern">
+                                <label for="costo-hora">Tiempo (Costo / Hora $)</label>
+                                <input type="number" id="costo-hora" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern">
+                                <label for="combustible">Monto Combustible ($)</label>
+                                <input type="number" id="combustible" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern" style="grid-column: span 2;">
+                                <label for="peajes">Presupuesto Peajes ($)</label>
+                                <input type="number" id="peajes" min="0" step="1" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Costos de Personal y Margen -->
+                    <div class="form-card-group">
+                        <div class="section-title">
+                            <h3><i class="ph ph-users"></i> Costos de Personal y Utilidad</h3>
+                        </div>
+                        <div class="grid-2">
+                            <div class="input-modern">
+                                <label for="cantidad-personal">Cantidad de Personal</label>
+                                <input type="number" id="cantidad-personal" readonly style="background-color: #f1f5f9; cursor: not-allowed; border-color: #cbd5e1; font-weight: bold; color: #475569;" value="1" title="Calculado automáticamente según peso">
+                            </div>
+                            <div class="input-modern">
+                                <label for="viaticos">Viáticos por Persona ($)</label>
+                                <input type="number" id="viaticos" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern">
+                                <label for="cargue">Personal de Cargue ($)</label>
+                                <input type="number" id="cargue" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="input-modern">
+                                <label for="costo-fijo">Tarifa Fija de Despacho ($)</label>
+                                <input type="number" id="costo-fijo" min="0" step="1" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="input-modern utility-highlight mt-3">
+                            <label for="margen">Margen de Utilidad Bruta (%)</label>
+                            <input type="number" id="margen" min="0" step="0.1" placeholder="0">
+                        </div>
+
+                        <div class="toggle-card mt-3">
+                            <div class="toggle-info">
+                                <strong><i class="ph ph-arrows-left-right"></i> Retorno en Vacío</strong>
+                                <p>Cobra el recorrido de regreso duplicando la métrica de distancia.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="retorno-vacio">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="calculate-btn" style="display:none;"></button>
+                </form>
+            </section>
+
+            <!-- Right Column: Results & PDF -->
+            <section class="summary-section">
+                <div class="results-card" id="results-card">
+                    <div class="results-header">
+                        <h2>Resumen Financiero</h2>
+                    </div>
+                    
+                    <!-- Alert for Third Party Fleet -->
+                    <div id="alert-tercerizado" style="display:none; background: #fffbeb; border: 1px solid #f59e0b; border-radius: 8px; padding: 10px; margin-bottom: 15px; align-items: center; gap: 10px;">
+                        <i class="ph-fill ph-warning-diamond" style="color:#d97706; font-size: 1.5rem;"></i>
+                        <div style="font-size: 12px; color: #b45309; line-height: 1.2;">
+                            <strong>Capacidad Propia Excedida:</strong> Se requiere transporte tercerizado. Equinorte asume peajes y auxiliares.
+                        </div>
+                    </div>
+
+                    <div class="cost-breakdown detailed">
+                        <div class="cost-item">
+                            <span class="label">Costos de Operación (Ruta)</span>
+                            <span class="value" id="res-variables">$0</span>
+                        </div>
+                        <div class="cost-subtext">Distancia, Peso, Combustible y Peajes.</div>
+
+                        <div class="cost-item mt-3">
+                            <span class="label">Costos de Personal</span>
+                            <span class="value" id="res-operativos">$0</span>
+                        </div>
+                        <div class="cost-subtext">Viáticos y Personal de Cargue.</div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="kpi-metric-box mt-3 mb-3" style="background:#f0fdfa; border:1px solid #14b8a6; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span style="display:block; font-size:11px; font-weight:700; color:#0f766e; text-transform:uppercase; letter-spacing:0.5px;"><i class="ph-fill ph-chart-line-up"></i> Indicador Logístico (KPI)</span>
+                            <span style="font-size:14px; font-weight:700; color:#115e59;">Costo base por Ton-Km</span>
+                        </div>
+                        <span id="res-kpi-tonkm" style="font-size:16px; font-weight:900; color:#0d9488; font-family:'Outfit',sans-serif;">$0</span>
+                    </div>
+
+                    <div class="cost-total">
+                        <span class="label">Costo Neto (CT)</span>
+                        <span class="value highlight" id="res-ct">$0</span>
+                    </div>
+
+                    <div class="cost-final">
+                        <span class="label">Valor de Facturación <span id="res-margen-badge" class="badge">0%
+                                Margen</span></span>
+                        <span class="value super-highlight" id="res-precio">$0</span>
+                    </div>
+
+                    <!-- Profitability Indicator -->
+                    <div id="rentabilidad-badge" class="rentabilidad-badge" style="display:none;"></div>
+
+                    <!-- Cost Breakdown Chart -->
+                    <div class="chart-container" id="chart-container" style="display:none;">
+                        <canvas id="cost-chart"></canvas>
+                    </div>
+
+                    <button type="button" class="btn-pdf" id="btn-preview">
+                        <i class="ph ph-file-pdf"></i>
+                        Generar Factura (PDF)
+                    </button>
+
+                    <button type="button" class="btn-secondary w-100 mt-2" id="btn-save-quote">
+                        <i class="ph ph-floppy-disk"></i> Guardar Cotización
+                    </button>
+
+                    <button type="button" class="btn-clear w-100 mt-2" id="btn-clear-form">
+                        <i class="ph ph-eraser"></i> Limpiar Formulario
+                    </button>
+                    </div>
+
+                    </main>
+                </div>
+            </section> <!-- End Tab Calculadora -->
+
+            <!-- TAB 2: HISTORIAL -->
+            <section id="tab-historial" class="tab-pane">
+                <header class="page-header">
+                    <h2>Historial de Cotizaciones</h2>
+                    <p>Revisa, filtra y gestiona tus cotizaciones guardadas.</p>
+                </header>
+                <div class="tab-content-area">
+                    <!-- Filter Bar -->
+                    <div class="history-filter-bar">
+                        <div class="filter-group">
+                            <label><i class="ph ph-calendar"></i> Desde</label>
+                            <input type="date" id="filter-date-from">
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="ph ph-calendar"></i> Hasta</label>
+                            <input type="date" id="filter-date-to">
+                        </div>
+                        <div class="filter-group">
+                            <label><i class="ph ph-magnifying-glass"></i> Buscar</label>
+                            <input type="text" id="filter-search" placeholder="Ruta o cliente...">
+                        </div>
+                        <button type="button" id="btn-clear-filters" class="btn-secondary">
+                            <i class="ph ph-x-circle"></i> Limpiar
+                        </button>
+                    </div>
+                    <div class="results-card" id="history-card">
+                        <div class="results-header">
+                            <h2><i class="ph ph-clock-counter-clockwise"></i> Cotizaciones Recientes</h2>
+                        </div>
+                        <div class="history-list" id="history-list">
+                            <div class="empty-history">No hay cotizaciones guardadas en esta sesión.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <!-- TAB 3: AJUSTES -->
+        <section id="tab-ajustes" class="tab-pane">
+            <header class="page-header">
+                <h2>Ajustes Generales</h2>
+                <p>Configuración del sistema y la flota. Estos valores se guardarán como parámetros de cotización por defecto.</p>
+            </header>
+            <div class="tab-content-area">
+                <form id="settings-form" class="dashboard-form" style="max-width: 1000px; margin: 0 auto;">
+                    <div class="form-card-group settings-group">
+                        <div class="section-title">
+                            <h3><i class="ph ph-sliders"></i> Variables Globales</h3>
+                        </div>
+                        <div class="grid-2">
+                            <div class="input-modern utility-highlight">
+                                <label for="set-margen">Margen de Utilidad Base (%)</label>
+                                <input type="number" id="set-margen" min="0" step="0.1" value="30">
+                            </div>
+                            <div class="input-modern">
+                                <label for="set-combustible">Monto Base Combustible ($)</label>
+                                <input type="number" id="set-combustible" min="0" step="1000" value="100000">
+                            </div>
+                            <div class="input-modern">
+                                <label for="set-peajes">Monto Base Peajes ($)</label>
+                                <input type="number" id="set-peajes" min="0" step="1000" value="40000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card-group settings-group mt-3">
+                        <div class="section-title">
+                            <h3><i class="ph ph-truck"></i> Vehículos (Tarifas y Costos por Defecto)</h3>
+                        </div>
+                        
+                        <div class="settings-vehicle-grid">
+                            <!-- Camión Ligero 2.5 -->
+                            <div class="settings-vehicle-card">
+                                <h4><i class="ph ph-truck"></i> Camión Ligero (2.5 Ton)</h4>
+                                <div class="settings-inputs-grid">
+                                    <div class="input-modern"><label>Costo x Km ($)</label><input type="number" id="set-c25-km"></div>
+                                    <div class="input-modern"><label>Costo x Ton ($)</label><input type="number" id="set-c25-ton"></div>
+                                    <div class="input-modern"><label>Costo x Hora ($)</label><input type="number" id="set-c25-hora"></div>
+                                    <div class="input-modern"><label>Tarifa Fija Despacho</label><input type="number" id="set-c25-fijo"></div>
+                                    <div class="input-modern"><label>Viáticos ($)</label><input type="number" id="set-c25-viat"></div>
+                                    <div class="input-modern"><label>Personal Cargue</label><input type="number" id="set-c25-cargue"></div>
+                                </div>
+                            </div>
+
+                            <!-- Camión Mediano 5.2 -->
+                            <div class="settings-vehicle-card">
+                                <h4><i class="ph-fill ph-truck"></i> Camión Mediano (5.2 Ton)</h4>
+                                <div class="settings-inputs-grid">
+                                    <div class="input-modern"><label>Costo x Km ($)</label><input type="number" id="set-c52-km"></div>
+                                    <div class="input-modern"><label>Costo x Ton ($)</label><input type="number" id="set-c52-ton"></div>
+                                    <div class="input-modern"><label>Costo x Hora ($)</label><input type="number" id="set-c52-hora"></div>
+                                    <div class="input-modern"><label>Tarifa Fija Despacho</label><input type="number" id="set-c52-fijo"></div>
+                                    <div class="input-modern"><label>Viáticos ($)</label><input type="number" id="set-c52-viat"></div>
+                                    <div class="input-modern"><label>Personal Cargue</label><input type="number" id="set-c52-cargue"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions mt-3">
+                        <button type="button" class="btn-pdf" id="btn-save-settings" style="margin-top:0; width:auto; padding: 1rem 2.5rem; display:inline-flex;">
+                            <i class="ph ph-floppy-disk"></i> Guardar Variables
+                        </button>
+                        <span id="settings-status-msg" class="status-msg"></span>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        </div> <!-- End Main Content -->
+    </div> <!-- End App Wrapper -->
+
+    <!-- PDF Invoice Modal Preview -->
+    <div class="modal-overlay" id="pdf-modal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Vista Previa de Factura</h3>
+                <button type="button" class="btn-close" id="btn-close-modal"><i class="ph ph-x"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Data payload that gets printed to PDF -->
+                <div id="invoice-template" class="pdf-invoice-wrapper">
+                    <!-- Header -->
+                    <div class="pdf-header">
+                        <div>
+                            <h1 class="pdf-title">ROUTEFLOW PRO S.A.S</h1>
+                            <p class="pdf-subtitle">Tecnología en Logística y Transporte Inteligente</p>
+                            <p class="pdf-meta">NIT: 900.987.654-3</p>
+                        </div>
+                        <div class="pdf-invoice-details">
+                            <h2 class="pdf-invoice-title">FACTURA PROFORMA</h2>
+                            <p><strong>Fecha:</strong> <span id="pdf-date"></span></p>
+                            <p><strong>Doc No:</strong> RF-<span id="pdf-random-id"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Client & Route Data -->
+                    <div class="pdf-route-card">
+                        <h3>Detalles de la Operación Logística</h3>
+                        <!-- Client Row -->
+                        <div class="pdf-client-row" id="pdf-client-row" style="display:none; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #e2e8f0;">
+                            <p class="lbl">Cliente / Empresa</p>
+                            <p class="val" id="pdf-cliente" style="font-size:16px;">-</p>
+                        </div>
+                        <div class="pdf-route-grid">
+                            <div>
+                                <p class="lbl">Origen</p>
+                                <p class="val" id="pdf-origen">-</p>
+                            </div>
+                            <!-- Waypoints middle column (forward) -->
+                            <div id="pdf-waypoints-col" style="display:none;">
+                                <p class="lbl">Paradas Intermedias</p>
+                                <div id="pdf-waypoints-list" style="font-size:13px; font-weight:600;"></div>
+                            </div>
+                            <!-- Return stops column -->
+                            <div id="pdf-return-stops-col" style="display:none;">
+                                <p class="lbl" style="color:#3b82f6;"><i class="ph ph-arrows-counter-clockwise"></i> Recogidas de Retorno</p>
+                                <div id="pdf-return-stops-list" style="font-size:13px; font-weight:600; color:#3b82f6;"></div>
+                            </div>
+                            <div>
+                                <p class="lbl">Destino</p>
+                                <p class="val" id="pdf-destino">-</p>
+                            </div>
+                        </div>
+                        <div class="pdf-route-stats">
+                            <span><i class="ph ph-navigation-arrow"></i> Distancia: <strong id="pdf-dist">0
+                                    km</strong></span>
+                            <span><i class="ph ph-clock"></i> Tiempo Est.: <strong id="pdf-tiempo">0 hrs</strong></span>
+                            <span><i class="ph ph-package"></i> Carga: <strong id="pdf-peso">0 Tons</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown Tables -->
+
+                    <h4 class="pdf-section-title">1. Costos de Operación (Ruta)</h4>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto Actividad</th>
+                                <th style="width: 25%">Métrica base</th>
+                                <th style="width: 20%">Tarifa / Monto</th>
+                                <th style="width: 25%">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Servicio por Distancia <span id="pdf-retorno-badge"
+                                        style="display:none; color:#d97706; font-size:10px;">(Ida y Vuelta)</span></td>
+                                <td><span id="pdf-base-km">0</span> km</td>
+                                <td id="pdf-tarifa-km">$0</td>
+                                <td id="pdf-total-km">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Operación Carga Pesada</td>
+                                <td><span id="pdf-base-ton">0</span> Toneladas</td>
+                                <td id="pdf-tarifa-ton">$0</td>
+                                <td id="pdf-total-ton">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Tiempo Operación Vehículo</td>
+                                <td><span id="pdf-base-hora">0</span> Horas</td>
+                                <td id="pdf-tarifa-hora">$0</td>
+                                <td id="pdf-total-hora">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Gasto de Combustible</td>
+                                <td>Viaje Total</td>
+                                <td>-</td>
+                                <td id="pdf-total-combustible">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Presupuesto Peajes</td>
+                                <td>Ruta Integrada</td>
+                                <td>-</td>
+                                <td id="pdf-peajes">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="pdf-section-title">2. Gastos de Personal</h4>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto de Mano de Obra</th>
+                                <th style="width: 25%">Cantidad</th>
+                                <th style="width: 20%">Monto Fijo</th>
+                                <th style="width: 25%">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Viáticos por Persona</td>
+                                <td>Gastos Ruta</td>
+                                <td>-</td>
+                                <td id="pdf-viaticos">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Personal de Cargue/Maniobra</td>
+                                <td>Operación</td>
+                                <td>-</td>
+                                <td id="pdf-cargue">$0</td>
+                            </tr>
+                            <tr>
+                                <td>Tarifa Fija de Despacho</td>
+                                <td>1 Viaje</td>
+                                <td>-</td>
+                                <td id="pdf-fijo">$0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Totals -->
+                    <div class="pdf-totals-section">
+                        <div class="pdf-totals-box">
+                            <div class="pdf-row">
+                                <span>Costo Operativo Neto (CT)</span>
+                                <strong id="pdf-ct">$0</strong>
+                            </div>
+                            <div class="pdf-row margin-row">
+                                <span>Margen Aplicado (<span id="pdf-margen">0%</span>)</span>
+                                <strong id="pdf-margen-val">$0</strong>
+                            </div>
+                            <div class="pdf-row grand-total">
+                                <span>TOTAL A FACTURAR</span>
+                                <strong id="pdf-precio-final">$0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pdf-footer">
+                        <p>Este documento es una proforma logística generada automáticamente por el sistema inteligente
+                            de RouteFlow Pro.</p>
+                        <p>No representa documento equivalente a factura electrónica de venta.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="btn-cancel-pdf">Cerrar Visualización</button>
+                <button type="button" class="btn-primary-modal" id="btn-download-pdf">
+                    <i class="ph ph-download-simple"></i> Descargar Factura PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="tollsData.js"></script>
+    <script src="agencyRatesDb.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
