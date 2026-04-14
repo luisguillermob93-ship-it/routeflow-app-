@@ -154,6 +154,84 @@ h3 {
     box-shadow: 4px 0 20px rgba(0,0,0,0.03);
     z-index: 50;
     flex-shrink: 0;
+    transition: var(--transition);
+    position: relative;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    transition: var(--transition);
+    align-self: flex-end;
+}
+
+.sidebar-toggle:hover {
+    background: var(--accent-light);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.sidebar-toggle i {
+    transition: var(--transition);
+}
+
+/* Collapsed State */
+.sidebar.collapsed {
+    width: 80px;
+    padding: 2rem 1rem;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    align-self: center;
+}
+
+.sidebar.collapsed .sidebar-toggle i {
+    transform: rotate(180deg);
+}
+
+.sidebar.collapsed .logo-area h1,
+.sidebar.collapsed .pro-badge,
+.sidebar.collapsed .nav-item span,
+.sidebar.collapsed .sidebar-footer .status-badge span:not(.dot),
+.sidebar.collapsed .btn-dark-toggle span {
+    display: none;
+}
+
+.sidebar.collapsed .logo-area {
+    justify-content: center;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+
+.sidebar.collapsed .logo-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.3rem;
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 1rem;
+}
+
+.sidebar.collapsed .status-badge,
+.sidebar.collapsed .btn-dark-toggle {
+    justify-content: center;
+    padding: 0.8rem;
+}
+
+.sidebar.collapsed .nav-item i {
+    font-size: 1.5rem;
 }
 
 .sidebar .logo-area {

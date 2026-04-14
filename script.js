@@ -499,6 +499,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- SIDEBAR TOGGLE LOGIC ---
+    const sidebar = document.querySelector('.sidebar');
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+
+    const toggleSidebar = (collapsed) => {
+        if (collapsed) sidebar.classList.add('collapsed');
+        else sidebar.classList.remove('collapsed');
+        
+        localStorage.setItem('routeflow_sidebar_collapsed', collapsed);
+        
+        // Fix map size after transition
+        if (typeof map !== 'undefined') {
+            setTimeout(() => map.invalidateSize(), 400); // 400ms is our CSS transition time
+        }
+    };
+
+    btnToggleSidebar.addEventListener('click', () => {
+        const isCollapsed = !sidebar.classList.contains('collapsed');
+        toggleSidebar(isCollapsed);
+    });
+
+    // Restore sidebar state
+    const savedSidebarState = localStorage.getItem('routeflow_sidebar_collapsed') === 'true';
+    if (savedSidebarState) toggleSidebar(true);
+
     // --- INITIALIZE UI ---
     console.log("Sistema RouteFlow Pro Inicializado");
 
