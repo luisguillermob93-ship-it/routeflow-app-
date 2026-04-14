@@ -1047,12 +1047,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- PDF MODAL LOGIC ---
     const pdfModal = document.getElementById('pdf-modal');
 
+    // Attach column header labels to td cells for mobile responsive table display
+    function labelPdfTables() {
+        document.querySelectorAll('.pdf-table').forEach(table => {
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+            table.querySelectorAll('tbody tr').forEach(row => {
+                Array.from(row.cells).forEach((cell, i) => {
+                    if (headers[i]) cell.setAttribute('data-label', headers[i]);
+                });
+            });
+        });
+    }
+
     document.getElementById('btn-preview').addEventListener('click', function () {
         if (!document.getElementById('distancia').value || document.getElementById('distancia').value == 0) {
             alert("Por favor, trace una ruta primero introduciendo puntos logísticos.");
             return;
         }
         calculateCosts();
+        labelPdfTables(); // Apply column labels for mobile rendering
         pdfModal.classList.add('active');
         document.body.style.overflow = 'hidden';
     });
