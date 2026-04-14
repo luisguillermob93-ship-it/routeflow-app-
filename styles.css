@@ -1922,31 +1922,53 @@ input:checked+.slider:before {
         padding: 1rem;
     }
 
-    /* Map Responsive adjustments */
+    /* Map Responsive adjustments — Search card ABOVE map */
     .hero-map-section {
         padding: 0;
+        display: flex;
+        flex-direction: column;
     }
 
+    /* Convert map-container to vertical flex so card appears above map */
     .map-container {
-        height: 60vh;
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        overflow: visible;
         border-radius: 0;
-    }
-
-    .floating-search-card {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 100%;
-        border-radius: 0;
-        border: none;
-        border-bottom: 1px solid var(--border-color);
-        max-height: none;
-        margin-bottom: 0;
         box-shadow: none;
     }
 
+    /* Map canvas takes 45vh — below the search card */
+    #map {
+        order: 2;
+        height: 45vh;
+        min-height: 280px;
+        flex-shrink: 0;
+    }
+
+    /* Search card appears on top (order 1 = first) */
+    .floating-search-card {
+        order: 1;
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        border: none;
+        border-bottom: 2px solid var(--border-color);
+        max-height: none;
+        margin-bottom: 0;
+        box-shadow: none;
+        padding: 1rem 1.2rem;
+        background: var(--bg-card);
+        backdrop-filter: blur(16px);
+    }
+
     .search-inputs {
-        max-height: 250px;
+        max-height: 220px;
+        overflow-y: auto;
     }
 
     /* Form adjustments */
@@ -2174,4 +2196,85 @@ input:checked+.slider:before {
 
 .dark-mode .btn-sticky-pdf {
     background: var(--accent-color);
+}
+
+/* =========================================
+   MOBILE BOTTOM NAV BAR
+   ========================================= */
+.mobile-bottom-nav {
+    display: none; /* hidden on desktop */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-color);
+    z-index: 1200;
+    align-items: stretch;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.06);
+}
+
+.mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+}
+
+.mobile-nav-item i {
+    font-size: 1.5rem;
+    transition: transform 0.2s ease;
+}
+
+.mobile-nav-item.active {
+    color: var(--accent-color);
+}
+
+.mobile-nav-item.active i {
+    transform: scale(1.15);
+}
+
+.mobile-nav-item:active i {
+    transform: scale(0.9);
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-nav { display: flex; }
+
+    /* Push content above the bottom nav bar */
+    .tab-pane {
+        padding-bottom: 70px;
+    }
+
+    /* For the sticky results bar on costs tab — float above bottom nav */
+    .mobile-sticky-results {
+        bottom: 64px;
+    }
+}
+
+.dark-mode .mobile-bottom-nav {
+    background: rgba(15, 23, 42, 0.97);
+    border-top-color: rgba(51, 65, 85, 0.7);
+}
+
+.dark-mode .mobile-nav-item {
+    color: var(--text-muted);
+}
+
+.dark-mode .mobile-nav-item.active {
+    color: var(--accent-color);
 }

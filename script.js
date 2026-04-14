@@ -558,6 +558,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- MOBILE BOTTOM NAV BAR LOGIC ---
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+
+    const switchTab = (tabId) => {
+        // Deactivate all tab panes and nav items
+        navItems.forEach(n => n.classList.remove('active'));
+        mobileNavItems.forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+        // Activate the target tab pane
+        const targetPane = document.getElementById(tabId);
+        if (targetPane) targetPane.classList.add('active');
+
+        // Sync sidebar nav item
+        navItems.forEach(n => { if (n.getAttribute('data-tab') === tabId) n.classList.add('active'); });
+        // Sync bottom nav item
+        mobileNavItems.forEach(n => { if (n.getAttribute('data-tab') === tabId) n.classList.add('active'); });
+
+        // Fix map if needed
+        if (tabId === 'tab-mapa' && typeof map !== 'undefined') {
+            setTimeout(() => map.invalidateSize(), 300);
+        }
+    };
+
+    mobileNavItems.forEach(item => {
+        item.addEventListener('click', () => {
+            switchTab(item.getAttribute('data-tab'));
+        });
+    });
+
     // --- MOBILE ADVANCED UI LOGIC ---
 
     // 1. Accordions for Form Groups
