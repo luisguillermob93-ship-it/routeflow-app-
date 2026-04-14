@@ -2014,4 +2014,164 @@ input:checked+.slider:before {
 .dark-mode .mobile-header {
     background: #1e293b;
     border-bottom-color: rgba(51, 65, 85, 0.6);
+}
+
+/* =========================================
+   ADVANCED MOBILE UI COMPONENTS
+   ========================================= */
+
+/* Map Card Collapse Button */
+.btn-collapse-card {
+    margin-left: auto;
+    background: var(--bg-input);
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: none; /* Desktop hidden */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .btn-collapse-card { display: flex; }
+    
+    .floating-search-card.collapsed .search-inputs,
+    .floating-search-card.collapsed .auto-calc-notice {
+        display: none;
+    }
+    
+    .floating-search-card.collapsed {
+        padding: 1rem;
+    }
+    
+    .floating-search-card.collapsed .btn-collapse-card i {
+        transform: rotate(180deg);
+    }
+}
+
+/* Accordion Triggers (Mobile Only) */
+.accordion-trigger {
+    cursor: default;
+}
+
+.acc-icon {
+    display: none;
+    margin-left: auto;
+    transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+    .accordion-trigger {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        padding-bottom: 0px !important;
+    }
+    
+    .acc-icon { display: block; }
+    
+    .form-card-group {
+        transition: max-height 0.4s ease-in-out, padding 0.4s ease;
+        overflow: hidden;
+    }
+    
+    .form-card-group.collapsed {
+        padding-top: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+    
+    .form-card-group.collapsed > :not(.section-title) {
+        display: none;
+    }
+    
+    .form-card-group.collapsed .acc-icon {
+        transform: rotate(-90deg);
+    }
+    
+    .form-card-group .section-title {
+        margin-bottom: 0;
+    }
+    
+    .form-card-group:not(.collapsed) .section-title {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Sticky Mobile Results Footer */
+.mobile-sticky-results {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-color);
+    display: none; /* Desktop hidden */
+    z-index: 1000;
+    padding: 0 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+    .mobile-sticky-results { display: flex; }
+    
+    /* Give padding to bottom to avoid content being hidden under sticky bar */
+    .tab-pane#tab-calculadora {
+        padding-bottom: 100px;
+    }
+}
+
+.sticky-price-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sticky-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sticky-price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent-color);
+}
+
+.btn-sticky-pdf {
+    background: var(--text-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-soft);
+}
+
+/* Dark mode compatibility for new elements */
+.dark-mode .mobile-sticky-results {
+    background: rgba(30, 41, 59, 0.95);
+    border-top-color: rgba(51, 65, 85, 0.8);
+}
+
+.dark-mode .btn-collapse-card {
+    background: rgba(51, 65, 85, 0.6);
+}
+
+.dark-mode .btn-sticky-pdf {
+    background: var(--accent-color);
 }

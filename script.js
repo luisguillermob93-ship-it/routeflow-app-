@@ -326,6 +326,7 @@ function calculateCosts() {
     document.getElementById('res-ct').textContent = currencyFormatter.format(CT);
     document.getElementById('res-margen-badge').textContent = `${margenPerc}% Margen`;
     document.getElementById('res-precio').textContent = currencyFormatter.format(Precio);
+    if (window.syncStickyPrice) window.syncStickyPrice(currencyFormatter.format(Precio));
 
     // --- PROFITABILITY BADGE ---
     const rentBadge = document.getElementById('rentabilidad-badge');
@@ -556,6 +557,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // --- MOBILE ADVANCED UI LOGIC ---
+
+    // 1. Accordions for Form Groups
+    const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+    accordionTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                const parent = trigger.closest('.form-card-group');
+                const isCollapsed = parent.classList.contains('collapsed');
+                
+                // Optional: Close other accordions
+                document.querySelectorAll('.form-card-group').forEach(group => {
+                    group.classList.add('collapsed');
+                });
+
+                if (isCollapsed) {
+                    parent.classList.remove('collapsed');
+                }
+            }
+        });
+    });
+
+    // Initialize accordions as collapsed on mobile
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('.form-card-group').forEach(group => {
+            group.classList.add('collapsed');
+        });
+        // Keep first one open?
+        const firstGroup = document.querySelector('.form-card-group');
+        if (firstGroup) firstGroup.classList.remove('collapsed');
+    }
+
+    // 2. Map Card Collapse
+    const btnCollapseMap = document.getElementById('btn-collapse-map-card');
+    if (btnCollapseMap) {
+        btnCollapseMap.addEventListener('click', () => {
+            const card = btnCollapseMap.closest('.floating-search-card');
+            card.classList.toggle('collapsed');
+        });
+    }
+
+    // 3. Sticky Bar Actions
+    const btnStickyPdf = document.getElementById('btn-sticky-pdf');
+    const btnPreview = document.getElementById('btn-preview'); // Existing PDF button
+    if (btnStickyPdf && btnPreview) {
+        btnStickyPdf.addEventListener('click', () => btnPreview.click());
+    }
+
+    // Function to sync sticky price (to be called inside calculation logic)
+    window.syncStickyPrice = (priceText) => {
+        const stickyPrice = document.getElementById('res-sticky-price');
+        if (stickyPrice) stickyPrice.textContent = priceText;
+    };
 
     // --- INITIALIZE UI ---
     console.log("Sistema RouteFlow Pro Inicializado");

@@ -103,6 +103,9 @@
                     <div class="search-title">
                         <i class="ph ph-map-pin-line"></i>
                         <h3>Planificar Ruta</h3>
+                        <button type="button" id="btn-collapse-map-card" class="btn-collapse-card" title="Colapsar/Expandir Búsqueda">
+                            <i class="ph ph-caret-up"></i>
+                        </button>
                     </div>
                     <div class="search-inputs" id="route-inputs-container">
                         <div class="input-wrapper" id="origen-wrapper">
@@ -165,8 +168,8 @@
 
                     <!-- Vehicle Selector -->
                     <div class="form-card-group">
-                        <div class="section-title">
-                            <h3><i class="ph ph-truck"></i> Tipo de Vehículo</h3>
+                        <div class="section-title accordion-trigger">
+                            <h3><i class="ph ph-truck"></i> Tipo de Vehículo <i class="ph ph-caret-down acc-icon"></i></h3>
                         </div>
                         <div class="vehicle-selector-grid" id="vehicle-grid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
                             <div class="vehicle-card" data-vehicle="camion25">
@@ -189,8 +192,8 @@
 
                     <!-- Cliente -->
                     <div class="form-card-group">
-                        <div class="section-title">
-                            <h3><i class="ph ph-buildings"></i> Datos del Cliente</h3>
+                        <div class="section-title accordion-trigger">
+                            <h3><i class="ph ph-buildings"></i> Datos del Cliente <i class="ph ph-caret-down acc-icon"></i></h3>
                         </div>
                         <div class="input-modern">
                             <label for="cliente-nombre">Empresa / Cliente</label>
@@ -215,8 +218,8 @@
 
                     <!-- Costos Variables / Operación Logística -->
                     <div class="form-card-group">
-                        <div class="section-title">
-                            <h3><i class="ph ph-gas-pump"></i> Costos de Operación (Ruta)</h3>
+                        <div class="section-title accordion-trigger">
+                            <h3><i class="ph ph-gas-pump"></i> Costos de Operación (Ruta) <i class="ph ph-caret-down acc-icon"></i></h3>
                         </div>
                         <div class="grid-2">
                             <div class="input-modern">
@@ -244,8 +247,8 @@
 
                     <!-- Costos de Personal y Margen -->
                     <div class="form-card-group">
-                        <div class="section-title">
-                            <h3><i class="ph ph-users"></i> Costos de Personal y Utilidad</h3>
+                        <div class="section-title accordion-trigger">
+                            <h3><i class="ph ph-users"></i> Costos de Personal y Utilidad <i class="ph ph-caret-down acc-icon"></i></h3>
                         </div>
                         <div class="grid-2">
                             <div class="input-modern">
@@ -359,6 +362,19 @@
                     </div>
 
                     </main>
+                <div class="tab-content-area" style="padding-top: 1rem;">
+                    <!-- ... existing content ... -->
+                </div>
+
+                <!-- STICKY MOBILE RESULTS BAR -->
+                <div class="mobile-sticky-results" id="mobile-sticky-bar">
+                    <div class="sticky-price-info">
+                        <span class="sticky-label">Total a Facturar</span>
+                        <span class="sticky-price" id="res-sticky-price">$0</span>
+                    </div>
+                    <button type="button" class="btn-sticky-pdf" id="btn-sticky-pdf">
+                        <i class="ph ph-file-pdf"></i> PDF
+                    </button>
                 </div>
             </section> <!-- End Tab Calculadora -->
 
